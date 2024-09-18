@@ -1,4 +1,4 @@
-import Home from "../Screens/Home";
+import Home from "../Screens/Home/Home";
 import Greetings from "../Screens/Greetings";
 
 enum Route {

@@ -12,6 +12,7 @@ const RootStack = () => {
             name={route.name}
             component={route.screen}
             key={route.name}
+            options={route.navigationOptions}
           />
         );
       })}
