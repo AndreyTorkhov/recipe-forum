@@ -34,7 +34,7 @@ function SignUp({ navigation }: Props) {
 
           <ButtonDefoult
             onPress={() => navigation.navigate("Home")}
-            text="Login"
+            text="Sign up"
             buttonState="blue"
           />
         </View>
