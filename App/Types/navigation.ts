@@ -5,6 +5,7 @@ export type RootStackParamList = {
   Start: undefined;
   Login: undefined;
   SignUp: undefined;
+  Profile: undefined;
 };
 
 export type ScreenNavigationProp<RouteName extends keyof RootStackParamList> =
