@@ -31,8 +31,8 @@ function PopularRecipeList() {
   };
 
   return (
-    <View>
-      <View className="flex flex-row items-center mb-4">
+    <View className="pr-2">
+      <View className="flex flex-row items-center">
         <Text className="text-xl font-bold mr-2">Popular Recipes</Text>
         <Pressable onPress={toggleExpansion}>
           <Text className="text-[#70B9BE] text-base ml-24 font-bold">
