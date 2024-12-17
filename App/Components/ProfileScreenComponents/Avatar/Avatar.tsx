@@ -5,8 +5,8 @@ import ButtonMoreInfo from "../../ui/ButtonMoreInfo";
 interface AvatarCardProps {
   imageUri?: string;
   name: string;
-  status: string;
-  onEditPress: () => void;
+  status?: string;
+  onEditPress?: () => void;
 }
 
 const Avatar: React.FC<AvatarCardProps> = ({
@@ -24,10 +24,10 @@ const Avatar: React.FC<AvatarCardProps> = ({
 
       <View className="flex-1 px-4">
         <Text className="text-lg font-bold text-black">{name}</Text>
-        <Text className="text-sm text-gray-500">{status}</Text>
+        {status && <Text className="text-sm text-gray-500">{status}</Text>}
       </View>
 
-      <ButtonMoreInfo onPress={onEditPress} />
+      {onEditPress && <ButtonMoreInfo onPress={onEditPress} />}
     </View>
   );
 };

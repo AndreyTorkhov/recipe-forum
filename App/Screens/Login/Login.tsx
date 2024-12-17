@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   Text,
@@ -5,16 +6,35 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import { ScreenNavigationProp } from "../../Types/navigation";
-import ButtonDefoult from "../../Components/ui/ButtonDefoult/";
+import ButtonDefoult from "../../Components/ui/ButtonDefoult";
 import InputForm from "../../Components/ui/InputForm";
+import { login } from "../../Api/login";
 
 type Props = {
   navigation: ScreenNavigationProp<"Login">;
 };
 
 const Login = ({ navigation }: Props) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      await login(email, password);
+
+      navigation.navigate("Home");
+    } catch (error) {
+      Alert.alert("Ошибка", "Неверные данные для входа");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView className="flex-1 justify-center items-center bg-white">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -28,13 +48,22 @@ const Login = ({ navigation }: Props) => {
           <InputForm
             signatureText={"Login"}
             placeholderText={"you@yandex.ru"}
+            value={email}
+            onChangeText={setEmail}
           />
-          <InputForm signatureText={"Password"} placeholderText={"0000"} />
+          <InputForm
+            signatureText={"Password"}
+            placeholderText={"0000"}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
 
           <ButtonDefoult
-            onPress={() => navigation.navigate("Home")}
-            text="Login"
+            onPress={handleLogin} // Привязываем обработчик к кнопке
+            text={loading ? "Logging in..." : "Login"} // Отображаем "Logging in..." при загрузке
             buttonState="black"
+            disabled={loading} // Отключаем кнопку во время загрузки
           />
         </View>
       </TouchableWithoutFeedback>

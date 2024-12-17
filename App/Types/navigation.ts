@@ -6,6 +6,9 @@ export type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
   Profile: undefined;
+  Dish: undefined;
+  Camera: undefined;
+  CreateRecipe: undefined;
 };
 
 export type ScreenNavigationProp<RouteName extends keyof RootStackParamList> =

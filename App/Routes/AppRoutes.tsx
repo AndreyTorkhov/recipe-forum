@@ -1,9 +1,19 @@
 import Home from "../Screens/Home/Home";
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import Greetings from "../Screens/Greetings";
 import Login from "../Screens/Login";
 import SignUp from "../Screens/SignUp";
 import Profile from "../Screens/Profile";
+import Dish from "../Screens/Dish";
+import Camera from "../Screens/Camera";
+import CreateRecipe from "../Screens/CreateRecipe";
 import { AppTab } from "./AppTab";
+
+interface RouteConfig {
+  name: string;
+  screen: React.ComponentType<any>;
+  navigationOptions?: NativeStackNavigationOptions;
+}
 
 enum Route {
   StartScreen = "Start",
@@ -11,9 +21,12 @@ enum Route {
   LoginScreen = "Login",
   SignUpScreen = "SignUp",
   ProfileScreen = "Profile",
+  DishScreen = "Dish",
+  CameraScreen = "Camera",
+  CreateRecipeScreen = "CreateRecipe",
 }
 
-const Routes = [
+const Routes: RouteConfig[] = [
   {
     name: Route.StartScreen,
     screen: Greetings,
@@ -57,6 +70,27 @@ const Routes = [
   {
     name: Route.HomeScreen,
     screen: AppTab,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  {
+    name: Route.DishScreen,
+    screen: Dish,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  {
+    name: Route.CameraScreen,
+    screen: Camera,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  {
+    name: Route.CreateRecipeScreen,
+    screen: CreateRecipe,
     navigationOptions: {
       headerShown: false,
     },

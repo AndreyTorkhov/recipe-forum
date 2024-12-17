@@ -1,17 +1,30 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  GestureResponderEvent,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { ScreenNavigationProp } from "../../../Types/navigation";
 
 interface PopularRecipeItemProps {
   //   img: string;
   title: string;
   //   imgAuthor: string;
   authorName: string;
+  onPress?: (event: GestureResponderEvent) => void;
 }
 
 const FavoritesRecipesItem = (props: PopularRecipeItemProps) => {
-  const { title, authorName } = props;
+  const { title, authorName, onPress } = props;
+  const navigation: ScreenNavigationProp<"Dish"> = useNavigation();
   return (
-    <View className="bg-white shadow-md rounded-2xl w-[48%] p-3 mb-3">
+    <TouchableOpacity
+      onPress={() => navigation.navigate("Dish")}
+      className="bg-white shadow-md rounded-2xl w-[48%] p-3 mb-3"
+    >
       <View className="relative mb-1">
         <Image
           source={{ uri: "https://via.placeholder.com/150" }}
@@ -38,7 +51,7 @@ const FavoritesRecipesItem = (props: PopularRecipeItemProps) => {
           <Text className="text-sm text-gray-500">{authorName}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

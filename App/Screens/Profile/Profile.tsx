@@ -21,18 +21,14 @@ const Profile = ({ navigation }: Props) => {
   };
 
   return (
-    <View className="flex-1 bg-[#FBFBFB] p-6">
+    <View className="flex-1 bg-[#FBFBFB] p-6 pb-0 mb-20">
       <View className="my-8 bg-transparent w-full">
         <Text className="text-2xl leading-[135%] font-bold text-start text-black">
           Account
         </Text>
       </View>
 
-      <Avatar
-        name="Andrey Torkhov"
-        status="Status: Active"
-        onEditPress={handleEditProfile}
-      />
+      <Avatar name="Andrey Torkhov" status="Status: Active" />
 
       <FavoritesRecipesList />
 
