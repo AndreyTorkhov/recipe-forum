@@ -1,49 +1,38 @@
-import { useEffect, useState } from "react";
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationOptions,
-} from "@react-navigation/native-stack";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Routes, Route } from "./AppRoutes";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Home from "../Screens/Home";
+import { CheckAuth } from "../Services/checkAuth";
 
 const Stack = createNativeStackNavigator();
 
+const HomeWrapper = () => (
+  <CheckAuth>
+    <Home />
+  </CheckAuth>
+);
+
 const RootStack = () => {
-  const [initialRoute, setInitialRoute] = useState<Route | null>(null);
-
-  useEffect(() => {
-    const checkIfUserIsLoggedIn = async () => {
-      try {
-        const accessToken = await AsyncStorage.getItem("accessToken");
-
-        if (accessToken) {
-          setInitialRoute(Route.HomeScreen);
-        } else {
-          setInitialRoute(Route.StartScreen);
-        }
-      } catch (error) {
-        console.error("Ошибка при проверке токена", error);
-        setInitialRoute(Route.StartScreen);
-      }
-    };
-
-    checkIfUserIsLoggedIn();
-  }, []);
-
-  if (initialRoute === null) {
-    return null;
-  }
-
   return (
-    <Stack.Navigator initialRouteName={initialRoute}>
+    <Stack.Navigator>
       {Routes.map((route) => {
-        const options = route.navigationOptions;
+        if (!route.name) {
+          return (
+            <Stack.Screen
+              key={route.name}
+              name={route.name}
+              component={HomeWrapper}
+              options={route.navigationOptions}
+            />
+          );
+        }
+
         return (
           <Stack.Screen
+            key={route.name}
             name={route.name}
             component={route.screen}
-            key={route.name}
-            options={options as NativeStackNavigationOptions}
+            options={route.navigationOptions}
           />
         );
       })}

@@ -1,12 +1,23 @@
-import { api } from "./axiosConfig";
+import { api } from "../Api/axiosConfig";
 import { BodyLoginRequest, BodyRegisterRequest } from "../Types/api";
+import { setAccessToken } from "./tokenService";
 
 export class AuthServices {
-  static login({ email, password }: BodyLoginRequest) {
-    return api.post("/auth/login", { email, password });
+  static async login({ email, password }: BodyLoginRequest) {
+    const response = await api.post("/auth/login", { email, password });
+    const { accessToken } = response.data;
+    await setAccessToken(accessToken);
+    return response;
   }
 
-  static register({ name, email, password }: BodyRegisterRequest) {
-    return api.post("/auth/login", { name, email, password });
+  static async register({ name, email, password }: BodyRegisterRequest) {
+    const response = await api.post("/auth/register", {
+      name,
+      email,
+      password,
+    });
+    const { accessToken } = response.data;
+    await setAccessToken(accessToken);
+    return response;
   }
 }

@@ -4,12 +4,12 @@ import Greeting from "../../Components/HomeScreenComponents/GreetingForm";
 import Search from "../../Components/HomeScreenComponents/SearchInput/";
 import PopularRecipeList from "../../Components/HomeScreenComponents/PopularRecipeList";
 import RecomendationRecipeList from "../../Components/HomeScreenComponents/RecomendationRecipeList";
-import ButtonDefoult from "../../Components/ui/ButtonDefoult";
 import { ScreenNavigationProp } from "../../Types/navigation";
 import { StatusBar } from "expo-status-bar";
+import useUser from "../../lib/useUser";
 
 type Props = {
-  navigation: ScreenNavigationProp<"Home">;
+  navigation?: ScreenNavigationProp<"Home">;
 };
 
 const Home = ({ navigation }: Props) => {
@@ -17,12 +17,12 @@ const Home = ({ navigation }: Props) => {
     console.log("Поиск:", query);
   };
 
+  const { name } = useUser();
+
   const sections = [
     {
       id: "greeting",
-      renderItem: () => (
-        <Greeting name="Andrey Torkhov" navigation={navigation} />
-      ),
+      renderItem: () => <Greeting name={name} navigation={navigation} />,
     },
     { id: "search", renderItem: () => <Search onSearch={handleSearch} /> },
     { id: "popular", renderItem: () => <PopularRecipeList /> },
@@ -37,10 +37,6 @@ const Home = ({ navigation }: Props) => {
         renderItem={({ item }) => item.renderItem()}
         ListFooterComponent={<StatusBar style="dark" />}
       />
-      {/* <ButtonDefoult
-        onPress={() => navigation.navigate("Camera")}
-        text={"Add To Cart"}
-      /> */}
     </View>
   );
 };

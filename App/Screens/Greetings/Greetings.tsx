@@ -2,7 +2,6 @@ import { StatusBar } from "expo-status-bar";
 import { Text, View, Pressable, Image } from "react-native";
 import { ScreenNavigationProp } from "../../Types/navigation";
 import ButtonDefoult from "../../Components/ui/ButtonDefoult";
-// import icons from '../../../assets/iconsStart.png'
 
 type Props = {
   navigation: ScreenNavigationProp<"Start">;

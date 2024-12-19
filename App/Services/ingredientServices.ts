@@ -1,4 +1,4 @@
-import { api } from "./axiosConfig";
+import { api } from "../Api/axiosConfig";
 import { Ingredient } from "../Types/api";
 
 export class IngredientService {

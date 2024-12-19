@@ -11,7 +11,7 @@ import {
 import { ScreenNavigationProp } from "../../Types/navigation";
 import ButtonDefoult from "../../Components/ui/ButtonDefoult";
 import InputForm from "../../Components/ui/InputForm";
-import { login } from "../../Api/login";
+import { AuthServices } from "../../Services/authServices";
 
 type Props = {
   navigation: ScreenNavigationProp<"Login">;
@@ -25,11 +25,10 @@ const Login = ({ navigation }: Props) => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await login(email, password);
-
+      const response = await AuthServices.login({ email, password });
       navigation.navigate("Home");
-    } catch (error) {
-      Alert.alert("Ошибка", "Неверные данные для входа");
+    } catch (error: any) {
+      Alert.alert("Ошибка", error.message || "Ошибка авторизации");
     } finally {
       setLoading(false);
     }
@@ -60,10 +59,10 @@ const Login = ({ navigation }: Props) => {
           />
 
           <ButtonDefoult
-            onPress={handleLogin} // Привязываем обработчик к кнопке
-            text={loading ? "Logging in..." : "Login"} // Отображаем "Logging in..." при загрузке
+            onPress={handleLogin}
+            text={loading ? "Logging in..." : "Login"}
             buttonState="black"
-            disabled={loading} // Отключаем кнопку во время загрузки
+            disabled={loading}
           />
         </View>
       </TouchableWithoutFeedback>

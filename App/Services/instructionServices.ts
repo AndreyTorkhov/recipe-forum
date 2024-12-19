@@ -1,4 +1,4 @@
-import { api } from "./axiosConfig";
+import { api } from "../Api/axiosConfig";
 import { Instruction } from "../Types/api";
 
 export class InstructionService {

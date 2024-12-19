@@ -1,29 +1,45 @@
-// import { View, Text, FlatList, TouchableOpacity } from "react-native";
-// import { Fragment, useLayoutEffect, useState } from "react";
-// import { useLocation } from "react-router-dom";
-// import { UserService } from "./usersServices";
-// // import { PropsWithChildren } from "shared/types/propsWithChildren";
+import React, { useEffect, useState } from "react";
+import { View, ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PropsWithChildren } from "../Types/propsWithChildren";
+import { useNavigation } from "@react-navigation/native";
+import { ScreenNavigationProp } from "../Types/navigation";
 
-// interface CheckAuthProps {}
+interface CheckAuthProps {}
 
-// export const CheckAuth = ({ children }: CheckAuthProps) => {
-//   const [isLoading, setIsLoading] = useState(true);
-//   const location = useLocation();
+export const CheckAuth = ({ children }: PropsWithChildren<CheckAuthProps>) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigation: ScreenNavigationProp<"Home"> = useNavigation();
 
-//   useLayoutEffect(() => {
-//     UserService.getUserMe().finally(() =>
-//       setTimeout(() => setIsLoading(false), 300)
-//     );
-//   }, [location]);
+  useEffect(() => {
+    const checkIfUserIsLoggedIn = async () => {
+      try {
+        const accessToken = await AsyncStorage.getItem("accessToken");
+        setIsLoggedIn(!!accessToken);
+      } catch (error) {
+        console.error("Ошибка при проверке токена", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-//   if (isLoading)
-//     return (
-//       <View>
-//         <Text>Загрузка...</Text>
-//       </View>
-//     );
+    checkIfUserIsLoggedIn();
+  }, []);
 
-//   return (
-//     <Fragment key={location.pathname + location.hash}>{children}</Fragment>
-//   );
-// };
+  useEffect(() => {
+    if (!isLoading && !isLoggedIn) {
+      navigation.navigate("Start");
+    }
+  }, [isLoading, isLoggedIn, navigation]);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  return <>{children}</>;
+};

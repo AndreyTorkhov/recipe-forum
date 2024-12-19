@@ -7,11 +7,12 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from "react-native";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ScreenNavigationProp } from "../../Types/navigation";
 import ButtonDefoult from "../../Components/ui/ButtonDefoult";
 import InputForm from "../../Components/ui/InputForm";
-import { register } from "../../Api/register";
+import { AuthServices } from "../../Services/authServices";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = {
   navigation: ScreenNavigationProp<"SignUp">;
@@ -21,16 +22,17 @@ function SignUp({ navigation }: Props) {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSignUp = async () => {
+    setLoading(true);
     try {
-      const data = await register(name, email, password);
+      const response = await AuthServices.register({ name, email, password });
       navigation.navigate("Home");
-    } catch (error) {
-      Alert.alert(
-        "Ошибка",
-        "Не удалось зарегистрироваться. Проверьте введённые данные."
-      );
+    } catch (error: any) {
+      Alert.alert("Ошибка", error.message || "Ошибка авторизации");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,8 +68,9 @@ function SignUp({ navigation }: Props) {
 
           <ButtonDefoult
             onPress={handleSignUp}
-            text="Sign up"
+            text={loading ? "Signing in..." : "Sign up"}
             buttonState="blue"
+            disabled={loading}
           />
         </View>
       </TouchableWithoutFeedback>
