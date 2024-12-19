@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { UserService } from "../Services/usersServices";
+import { useUserStore } from "../Store/useUserStore";
 
 interface UseUserResult {
-  name: string | null;
   isLoading: boolean;
   error: string | null;
 }
 
 function useUser(): UseUserResult {
-  const [name, setName] = useState<string | null>(null);
+  const setName = useUserStore((state) => state.setName);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,9 +28,9 @@ function useUser(): UseUserResult {
     };
 
     fetchUser();
-  }, []);
+  }, [setName]);
 
-  return { name, isLoading, error };
+  return { isLoading, error };
 }
 
 export default useUser;

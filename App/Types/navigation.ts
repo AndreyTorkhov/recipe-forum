@@ -6,10 +6,10 @@ export type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
   Profile: undefined;
-  Dish: undefined;
+  Dish: { id: number };
   Camera: undefined;
   CreateRecipe: undefined;
 };
 
-export type ScreenNavigationProp<RouteName extends keyof RootStackParamList> =
-  NativeStackNavigationProp<RootStackParamList, RouteName>;
+export type ScreenNavigationProp<T extends keyof RootStackParamList> =
+  NativeStackNavigationProp<RootStackParamList, T>;

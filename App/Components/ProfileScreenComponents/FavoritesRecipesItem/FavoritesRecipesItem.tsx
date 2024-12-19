@@ -22,7 +22,7 @@ const FavoritesRecipesItem = (props: PopularRecipeItemProps) => {
   const navigation: ScreenNavigationProp<"Dish"> = useNavigation();
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Dish")}
+      onPress={() => navigation.navigate("Dish", { id: 4 })}
       className="bg-white shadow-md rounded-2xl w-[48%] p-3 mb-3"
     >
       <View className="relative mb-1">

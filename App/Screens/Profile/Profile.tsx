@@ -4,21 +4,18 @@ import Avatar from "../../Components/ProfileScreenComponents/Avatar";
 import FavoritesRecipesList from "../../Components/ProfileScreenComponents/FavoritesRecipesList";
 import { StatusBar } from "expo-status-bar";
 import { ScreenNavigationProp } from "../../Types/navigation";
+import { useUserStore } from "../../Store/useUserStore";
 
 type Props = {
   navigation: ScreenNavigationProp<"Profile">;
 };
 
 const Profile = ({ navigation }: Props) => {
-  // const likedRecipes = [
-  //   { id: "1", title: "Spaghetti Carbonara" },
-  //   { id: "2", title: "Chicken Alfredo" },
-  //   { id: "3", title: "Caesar Salad" },
-  // ];
-
   const handleEditProfile = () => {
     console.log("Edit Profile Pressed");
   };
+
+  const name = useUserStore((state) => state.name);
 
   return (
     <View className="flex-1 bg-[#FBFBFB] p-6 pb-0 mb-20">
@@ -28,7 +25,7 @@ const Profile = ({ navigation }: Props) => {
         </Text>
       </View>
 
-      <Avatar name="Andrey Torkhov" status="Status: Active" />
+      <Avatar name={name} status="Status: Active" />
 
       <FavoritesRecipesList />
 

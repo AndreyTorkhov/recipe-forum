@@ -15,27 +15,14 @@ const HomeWrapper = () => (
 const RootStack = () => {
   return (
     <Stack.Navigator>
-      {Routes.map((route) => {
-        if (!route.name) {
-          return (
-            <Stack.Screen
-              key={route.name}
-              name={route.name}
-              component={HomeWrapper}
-              options={route.navigationOptions}
-            />
-          );
-        }
-
-        return (
-          <Stack.Screen
-            key={route.name}
-            name={route.name}
-            component={route.screen}
-            options={route.navigationOptions}
-          />
-        );
-      })}
+      {Routes.map((route) => (
+        <Stack.Screen
+          key={route.name}
+          name={route.name}
+          component={route.screen === Home ? HomeWrapper : route.screen}
+          options={route.navigationOptions}
+        />
+      ))}
     </Stack.Navigator>
   );
 };

@@ -27,15 +27,3 @@ export const removeAccessToken = async () => {
     console.error("Ошибка при удалении токена:", error);
   }
 };
-
-// export const setRefreshToken = async (token: string) => {
-//   await AsyncStorage.setItem(REFRESH_TOKEN_KEY, token);
-// };
-
-// export const getRefreshToken = async () => {
-//   return await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
-// };
-
-// export const removeRefreshToken = async () => {
-//   await AsyncStorage.removeItem(REFRESH_TOKEN_KEY);
-// };

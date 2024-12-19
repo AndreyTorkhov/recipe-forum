@@ -28,7 +28,7 @@ const Login = ({ navigation }: Props) => {
       const response = await AuthServices.login({ email, password });
       navigation.navigate("Home");
     } catch (error: any) {
-      Alert.alert("Ошибка", error.message || "Ошибка авторизации");
+      Alert.alert("Ошибка авторизации", "Исправьте введенные данные");
     } finally {
       setLoading(false);
     }
@@ -40,18 +40,18 @@ const Login = ({ navigation }: Props) => {
         <View className="justify-center items-center p-4 w-full">
           <View className=" pb-[20px]">
             <Text className="text-3xl text-black text-center text-bold">
-              Сomplete the form
+              Заполните форму
             </Text>
           </View>
 
           <InputForm
-            signatureText={"Login"}
+            signatureText={"Почта"}
             placeholderText={"you@yandex.ru"}
             value={email}
             onChangeText={setEmail}
           />
           <InputForm
-            signatureText={"Password"}
+            signatureText={"Пароль"}
             placeholderText={"0000"}
             value={password}
             onChangeText={setPassword}
@@ -60,7 +60,7 @@ const Login = ({ navigation }: Props) => {
 
           <ButtonDefoult
             onPress={handleLogin}
-            text={loading ? "Logging in..." : "Login"}
+            text={loading ? "Авторизация..." : "Авторизироватсья"}
             buttonState="black"
             disabled={loading}
           />

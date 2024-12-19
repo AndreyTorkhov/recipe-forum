@@ -19,7 +19,7 @@ function Search(props: SearchProps) {
         <Image source={require("./img/search.png")} className="mr-4" />
 
         <TextInput
-          placeholder="Search"
+          placeholder="Поиск"
           value={query}
           onChangeText={(text) => setQuery(text)}
           className="flex-1 text-base leading-[145%]"

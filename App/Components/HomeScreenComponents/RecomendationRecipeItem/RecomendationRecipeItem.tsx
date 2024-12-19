@@ -1,21 +1,34 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import ButtonMoreInfo from "../../ui/ButtonMoreInfo";
+import { ScreenNavigationProp } from "../../../Types/navigation";
+import { transformUrl } from "../../../lib/transformUrl";
 
 interface RecomendationRecipeItemProps {
-  //   imageRecipe: string
-  //   imageAuthor: string;
+  id: number;
   authorName: string;
   title: string;
+  image: string;
+  navigation: ScreenNavigationProp<"Home">;
 }
 
 function RecomendationRecipeItem(props: RecomendationRecipeItemProps) {
-  const { title, authorName } = props;
+  const { id, title, authorName, image, navigation } = props;
+  const transformedUrl = transformUrl(image);
+
+  const handleNavigateToDish = () => {
+    navigation.navigate("Dish", { id });
+  };
+
+  console.log(transformedUrl);
+
   return (
     <View className="bg-white rounded-2xl shadow-xl pl-2 border-[#FBFBFB] border-2 shadow-[#C4C4C4] w-full flex-row items-center justify-between mb-4">
       <Image
-        source={{ uri: "https://via.placeholder.com/100" }}
-        className="w-[100px] h-20 rounded-2xl my-2"
+        source={{
+          uri: transformedUrl,
+        }}
+        style={{ width: 100, height: 80, borderRadius: 16, marginVertical: 8 }}
       />
 
       <View className="flex-1 flex-row items-center justify-between px-2">
@@ -41,7 +54,7 @@ function RecomendationRecipeItem(props: RecomendationRecipeItemProps) {
             </Text>
           </View>
         </View>
-        <ButtonMoreInfo />
+        <ButtonMoreInfo onPress={handleNavigateToDish} />
       </View>
     </View>
   );

@@ -1,28 +1,22 @@
 import { Text, View, Image, Button } from "react-native";
-// import ButtonMoreInfo from "../../ui/ButtonMoreInfo";
+import { getGreetingBasedOnTime } from "../../../lib/getGreetingBasedOnTime";
 
 interface GreetingProps {
   name: string;
-  navigation: any;
 }
 
 function Greeting(props: GreetingProps) {
-  const { name, navigation } = props;
-
-  const handleNavigateToGreeting = () => {
-    navigation.navigate("Start");
-  };
+  const { name } = props;
+  const greeting = getGreetingBasedOnTime();
 
   return (
-    <View className="mb-6 bg-[#FBFBFB]">
+    <View className="mb-4 bg-[#FBFBFB]">
       <View className="flex-row items-center">
         <Image source={require("./img/Sun.png")} className="mr-1" />
-        <Text className="text-sm">Good Morning</Text>
+        <Text className="text-lg">
+          {greeting}, {name}
+        </Text>
       </View>
-
-      <Text className="text-lg font-bold">{name}</Text>
-
-      {/* <ButtonMoreInfo onPress={handleNavigateToGreeting} /> */}
     </View>
   );
 }

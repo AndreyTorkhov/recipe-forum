@@ -6,7 +6,8 @@ import PopularRecipeList from "../../Components/HomeScreenComponents/PopularReci
 import RecomendationRecipeList from "../../Components/HomeScreenComponents/RecomendationRecipeList";
 import { ScreenNavigationProp } from "../../Types/navigation";
 import { StatusBar } from "expo-status-bar";
-import useUser from "../../lib/useUser";
+import useUser from "../../hooks/useUser";
+import { useUserStore } from "../../Store/useUserStore";
 
 type Props = {
   navigation?: ScreenNavigationProp<"Home">;
@@ -17,16 +18,20 @@ const Home = ({ navigation }: Props) => {
     console.log("Поиск:", query);
   };
 
-  const { name } = useUser();
+  const { isLoading, error } = useUser();
+  const name = useUserStore((state) => state.name);
 
   const sections = [
     {
       id: "greeting",
-      renderItem: () => <Greeting name={name} navigation={navigation} />,
+      renderItem: () => <Greeting name={name} />,
     },
     { id: "search", renderItem: () => <Search onSearch={handleSearch} /> },
-    { id: "popular", renderItem: () => <PopularRecipeList /> },
-    { id: "recommendations", renderItem: () => <RecomendationRecipeList /> },
+    // { id: "popular", renderItem: () => <PopularRecipeList /> },
+    {
+      id: "recommendations",
+      renderItem: () => <RecomendationRecipeList navigation={navigation} />,
+    },
   ];
 
   return (

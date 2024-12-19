@@ -8,9 +8,10 @@ import Dish from "../Screens/Dish";
 import Camera from "../Screens/Camera";
 import CreateRecipe from "../Screens/CreateRecipe";
 import { AppTab } from "./AppTab";
+import { RootStackParamList } from "../Types/navigation";
 
 interface RouteConfig {
-  name: string;
+  name: keyof RootStackParamList;
   screen: React.ComponentType<any>;
   navigationOptions?: NativeStackNavigationOptions;
 }

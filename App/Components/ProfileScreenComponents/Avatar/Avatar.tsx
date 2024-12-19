@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image } from "react-native";
 import ButtonMoreInfo from "../../ui/ButtonMoreInfo";
 
 interface AvatarCardProps {
