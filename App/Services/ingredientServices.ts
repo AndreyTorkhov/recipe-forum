@@ -15,7 +15,7 @@ export class IngredientService {
   }
 
   static getIngredient() {
-    return api.get<Ingredient>("/ingredient");
+    return api.get<Ingredient[]>("/ingredient");
   }
 
   static patchIngredient(id: number, name: string) {

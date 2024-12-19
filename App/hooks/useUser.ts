@@ -9,6 +9,7 @@ interface UseUserResult {
 
 function useUser(): UseUserResult {
   const setName = useUserStore((state) => state.setName);
+  const setId = useUserStore((state) => state.setId);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,6 +19,7 @@ function useUser(): UseUserResult {
         setIsLoading(true);
         const response = await UserService.getUserMe();
         setName(response.data.name);
+        setId(response.data.id);
         setError(null);
       } catch (err: any) {
         console.error("Ошибка при загрузке пользователя:", err);
