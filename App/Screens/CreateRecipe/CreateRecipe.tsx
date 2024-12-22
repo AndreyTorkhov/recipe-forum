@@ -6,8 +6,17 @@ import PhotoCard from "../../Components/ui/PhotoCard";
 import { MultiSelect } from "react-native-element-dropdown";
 import { IngredientService } from "../../Services/ingredientServices";
 import { useRecipeStore } from "../../Store/useRecipeStore";
+import { useUserStore } from "../../Store/useUserStore";
+import { InstructionService } from "../../Services/instructionServices";
+import { DishService } from "../../Services/dishServices";
+import { ScreenNavigationProp } from "../../Types/navigation";
+import { useDishStore } from "../../Store/useDishStore";
 
-const CreateRecipe = () => {
+type Props = {
+  navigation: ScreenNavigationProp<"CreateRecipe">;
+};
+
+const CreateRecipe = ({ navigation }: Props) => {
   const {
     selectedIngredients,
     setSelectedIngredients,
@@ -15,6 +24,8 @@ const CreateRecipe = () => {
     addStep,
     updateStep,
   } = useRecipeStore();
+
+  const { fetchDishes } = useDishStore();
 
   const [availableIngredients, setAvailableIngredients] = useState<
     { label: string; value: number }[]
@@ -59,13 +70,115 @@ const CreateRecipe = () => {
     setSelectedIngredients(selected);
   };
 
-  const handleSave = () => {
-    console.log("Название блюда:", dishName);
-    console.log("Описание блюда:", dishDescription);
-    console.log("Фото блюда:", dishPhoto);
-    console.log("Выбранные ингредиенты:", selectedIngredients);
-    console.log("Шаги приготовления:", steps);
-    console.log("Рецепт сохранен!");
+  const handleSave = async () => {
+    try {
+      const creatorId = useUserStore.getState().id;
+      const { steps, resetStepIds, addStepId, recipeId, setRecipeId } =
+        useRecipeStore.getState();
+
+      if (!dishName.trim() || !dishDescription.trim()) {
+        console.error("Название и описание блюда не могут быть пустыми.");
+        return;
+      }
+
+      if (!creatorId) {
+        console.error("ID создателя не найден.");
+        return;
+      }
+
+      const ingredientIds = selectedIngredientIds.map((id) => Number(id));
+      const stepIds: number[] = [];
+
+      console.log("Начало сохранения рецепта...");
+
+      resetStepIds();
+
+      // Создаем шаги
+      for (const [index, step] of steps.entries()) {
+        try {
+          const stepData = {
+            step_number: index + 1,
+            description: step.description,
+            image: step.photo, // Проверяем наличие фото
+          };
+
+          console.log(stepData);
+
+          const response = await InstructionService.addInstruction(stepData);
+
+          if (!response || !response.data?.id) {
+            throw new Error(`Ошибка создания шага ${index + 1}`);
+          }
+
+          const stepId = response.data.id;
+          console.log(stepId);
+          console.log(`Шаг ${index + 1} создан:`, response.data);
+
+          addStepId(stepId);
+          stepIds.push(stepId);
+
+          console.log(stepId, step.photo);
+
+          if (step.photo) {
+            try {
+              const photoResponse =
+                await InstructionService.addImageToInstruction(
+                  stepId,
+                  step.photo
+                );
+              console.log("Фото успешно добавлено к шагу:", photoResponse.data);
+            } catch (error: any) {}
+          } else {
+            await InstructionService.addImageToInstruction(stepId, "tooeopewd");
+          }
+        } catch (stepError) {
+          console.error(`Ошибка при создании шага ${index + 1}:`, stepError);
+          return; // Останавливаем процесс, если ошибка на одном из шагов
+        }
+      }
+
+      console.log("Все шаги успешно отправлены. ID шагов:", stepIds);
+
+      // Создаем блюдо
+      try {
+        const dishData = {
+          name: dishName,
+          description: dishDescription,
+          creatorId,
+          instructionIds: stepIds, // Массив ID шагов
+          ingredientIds, // Массив ID ингредиентов
+        };
+
+        console.log("запросики");
+
+        const dishResponse = await DishService.addDish(dishData);
+
+        console.log("успех");
+
+        if (!dishResponse || !dishResponse.data?.id) {
+          throw new Error("Ошибка создания блюда");
+        }
+
+        const dishId = dishResponse.data.id;
+        setRecipeId(dishId);
+
+        console.log("Блюдо создано:", dishResponse.data);
+
+        if (dishPhoto) {
+          console.log(`Добавляем изображение к блюду ${dishId}`);
+          await DishService.addImageToDish(dishId, dishPhoto);
+        }
+      } catch (dishError) {
+        console.error("Ошибка при создании блюда:", dishError);
+        return; // Завершаем процесс при ошибке создания блюда
+      }
+      navigation.navigate("Home");
+      fetchDishes();
+
+      console.log("Рецепт успешно сохранен!");
+    } catch (error) {
+      console.error("Ошибка при сохранении рецепта:", error);
+    }
   };
 
   if (loading) {

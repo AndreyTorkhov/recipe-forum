@@ -2,12 +2,30 @@ import { api } from "../Api/axiosConfig";
 import { Instruction } from "../Types/api";
 
 export class InstructionService {
-  static addInstruction({ image, ...data }: Instruction) {
+  static addInstruction(data: Omit<Instruction, "id">) {
     return api.post<Instruction>("/instruction", data);
   }
 
-  static addImageToInstruction(id: number) {
-    return api.post<Instruction>(`/instruction/${id}/image`);
+  static addImageToInstruction(id: number, imageUri: string) {
+    const formData = new FormData();
+    const imageName = imageUri.split("/").pop();
+
+    formData.append("image", {
+      uri: imageUri,
+      name: imageName || "photo.jpg",
+      type: "image/jpeg",
+    } as unknown as Blob);
+
+    console.log("Добавляем изображение к шагу:", {
+      id,
+      formData,
+    });
+
+    return api.post<Instruction>(`/instruction/${id}/add-image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
 
   static getInstructionById(id: number) {

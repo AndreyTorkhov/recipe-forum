@@ -14,13 +14,13 @@ interface RecomendationRecipeItemProps {
 
 function RecomendationRecipeItem(props: RecomendationRecipeItemProps) {
   const { id, title, authorName, image, navigation } = props;
-  const transformedUrl = transformUrl(image);
+  console.log("тут", image);
+
+  const transformedUrl = transformUrl(image || "string");
 
   const handleNavigateToDish = () => {
     navigation.navigate("Dish", { id });
   };
-
-  console.log(transformedUrl);
 
   return (
     <View className="bg-white rounded-2xl shadow-xl pl-2 border-[#FBFBFB] border-2 shadow-[#C4C4C4] w-full flex-row items-center justify-between mb-4">
