@@ -21,11 +21,11 @@ const Profile = ({ navigation }: Props) => {
     <View className="flex-1 bg-[#FBFBFB] p-6 pb-0 mb-20">
       <View className="my-8 bg-transparent w-full">
         <Text className="text-2xl leading-[135%] font-bold text-start text-black">
-          Account
+          Аккаунт
         </Text>
       </View>
 
-      <Avatar name={name} status="Status: Active" />
+      <Avatar name={name} status="Статус: Активен" />
 
       <FavoritesRecipesList />
 

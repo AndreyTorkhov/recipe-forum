@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 interface PhotoCardProps {
-  onPress: () => void;
+  onPress?: () => void;
   photo: string | null;
   onPickPhoto: (uri: string) => void;
   className?: string; // Поддержка кастомных стилей

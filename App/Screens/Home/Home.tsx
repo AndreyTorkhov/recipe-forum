@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import Greeting from "../../Components/HomeScreenComponents/GreetingForm";
 import Search from "../../Components/HomeScreenComponents/SearchInput/";
-import PopularRecipeList from "../../Components/HomeScreenComponents/PopularRecipeList";
 import RecomendationRecipeList from "../../Components/HomeScreenComponents/RecomendationRecipeList";
 import { ScreenNavigationProp } from "../../Types/navigation";
 import { StatusBar } from "expo-status-bar";
@@ -14,12 +13,13 @@ type Props = {
 };
 
 const Home = ({ navigation }: Props) => {
-  const handleSearch = (query: string) => {
-    console.log("Поиск:", query);
-  };
-
+  const [searchQuery, setSearchQuery] = useState("");
   const { isLoading, error } = useUser();
   const name = useUserStore((state) => state.name);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query); // Обновляем состояние при изменении строки поиска
+  };
 
   const sections = [
     {
@@ -27,10 +27,14 @@ const Home = ({ navigation }: Props) => {
       renderItem: () => <Greeting name={name} />,
     },
     { id: "search", renderItem: () => <Search onSearch={handleSearch} /> },
-    // { id: "popular", renderItem: () => <PopularRecipeList /> },
     {
       id: "recommendations",
-      renderItem: () => <RecomendationRecipeList navigation={navigation} />,
+      renderItem: () => (
+        <RecomendationRecipeList
+          navigation={navigation}
+          searchQuery={searchQuery}
+        />
+      ),
     },
   ];
 

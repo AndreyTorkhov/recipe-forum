@@ -12,10 +12,11 @@ import { useDishStore } from "../../../Store/useDishStore";
 
 interface Recipe {
   navigation: ScreenNavigationProp<"Home">;
+  searchQuery: string;
 }
 
 function RecomendationRecipeList(props: Recipe) {
-  const { navigation } = props;
+  const { navigation, searchQuery } = props;
   const { dishes, isLoading, error, fetchDishes } = useDishStore();
   const [showAll, setShowAll] = useState(false);
 
@@ -23,7 +24,14 @@ function RecomendationRecipeList(props: Recipe) {
     fetchDishes();
   }, [fetchDishes]);
 
-  const visibleRecipes = showAll ? dishes : dishes.slice(0, 5);
+  // Фильтруем рецепты на основе строки поиска
+  const filteredRecipes = dishes.filter((dish) =>
+    dish.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const visibleRecipes = showAll
+    ? filteredRecipes
+    : filteredRecipes.slice(0, 5);
 
   if (isLoading) {
     return (
@@ -33,10 +41,10 @@ function RecomendationRecipeList(props: Recipe) {
     );
   }
 
-  if (!dishes.length) {
+  if (!filteredRecipes.length) {
     return (
       <View>
-        <Text className="text-gray-500">Нет популярных рецептов</Text>
+        <Text className="text-gray-500">Рецепты не найдены</Text>
       </View>
     );
   }

@@ -24,7 +24,7 @@ export interface Dish {
   image?: string;
   description: string;
   instructions: Instruction[];
-  cretator: User;
+  cretator?: User;
   creatorId: number;
   ingredients: Ingredient[];
 }

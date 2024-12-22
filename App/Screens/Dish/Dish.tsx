@@ -12,8 +12,9 @@ import Avatar from "../../Components/ProfileScreenComponents/Avatar";
 import DishInfo from "../../Components/DishScreenComponents/DishInfo";
 import TabSwitcher from "../../Components/DishScreenComponents/TabSwitcher";
 import IngredientsList from "../../Components/DishScreenComponents/IngredientsList";
+import InstructionsList from "../../Components/DishScreenComponents/InstructionsList";
 import { ScreenNavigationProp } from "../../Types/navigation";
-import { DishService } from "../../Services/dishServices";
+import { useDishStore } from "../../Store/useDishStore";
 
 type Props = {
   navigation: ScreenNavigationProp<"Dish">;
@@ -23,39 +24,11 @@ type Props = {
 const Dish = ({ route }: Props) => {
   const { id } = route.params;
   const [activeTab, setActiveTab] = useState("Ingredients");
-  const [dish, setDish] = useState<any | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { dishes } = useDishStore();
 
-  useEffect(() => {
-    const fetchDish = async () => {
-      try {
-        const response = await DishService.getDishById(id);
-        setDish(response.data);
-      } catch (error) {
-        console.error("Ошибка при загрузке блюда:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const curr = dishes.filter((dish) => dish.id === id);
 
-    fetchDish();
-  }, [id]);
-
-  if (isLoading) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  if (!dish) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <Text>Блюдо не найдено</Text>
-      </View>
-    );
-  }
+  console.log(curr);
 
   return (
     <SafeAreaProvider>
@@ -63,7 +36,9 @@ const Dish = ({ route }: Props) => {
         <ScrollView className="h-full bg-[#FBFBFB]">
           <View className="h-[40vh] pb-0 ">
             <ImageBackground
-              source={{ uri: dish.image || "https://via.placeholder.com/100" }}
+              source={{
+                uri: curr[0].image || "https://via.placeholder.com/100",
+              }}
               resizeMode="cover"
               className="flex-1"
             >
@@ -75,9 +50,9 @@ const Dish = ({ route }: Props) => {
           </View>
           <View className="flex-1 bg-[#FBFBFB] p-4 bottom-8 rounded-t-[36px]">
             <DishInfo
-              name={dish.name}
-              time={`${dish.time || "N/A"} min`}
-              description={dish.description || "Описание отсутствует"}
+              id={curr[0].id}
+              name={curr[0].name}
+              description={curr[0].description || "Описание отсутствует"}
             />
             <View className="flex-1">
               <TabSwitcher
@@ -85,14 +60,16 @@ const Dish = ({ route }: Props) => {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
               />
-              {activeTab === "Ingredients" && <IngredientsList />}
+              {activeTab === "Ingredients" && (
+                <IngredientsList ingredientIds={curr[0].ingredientIds} />
+              )}
               {activeTab === "Instructions" && (
-                <View className="flex-1 h-64 bg-red-700"></View>
+                <InstructionsList stepIds={curr[0].stepIds} />
               )}
             </View>
 
             <View className="bg-[#EBF0F6] h-[2px] w-full mb-4"></View>
-            <Avatar name={dish.creatorName || "N/A"} />
+            <Avatar name={curr[0].creatorName || "N/A"} />
           </View>
         </ScrollView>
       </SafeAreaView>

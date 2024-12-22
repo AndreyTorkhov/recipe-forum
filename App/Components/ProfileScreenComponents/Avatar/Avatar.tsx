@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
 import ButtonMoreInfo from "../../ui/ButtonMoreInfo";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 interface AvatarCardProps {
   imageUri?: string;
@@ -9,18 +10,12 @@ interface AvatarCardProps {
   onEditPress?: () => void;
 }
 
-const Avatar: React.FC<AvatarCardProps> = ({
-  imageUri = "https://via.placeholder.com/48",
-  name,
-  status,
-  onEditPress,
-}) => {
+const Avatar: React.FC<AvatarCardProps> = ({ name, status, onEditPress }) => {
   return (
     <View className="bg-white shadow-xl rounded-2xl p-4 flex-row items-center justify-between">
-      <Image
-        source={{ uri: imageUri }}
-        className="w-[48px] h-[48px] rounded-full"
-      />
+      <View className="w-[48px] h-[48px] rounded-full">
+        <Icon name={"person"} size={48} color="black" />
+      </View>
 
       <View className="flex-1 px-4">
         <Text className="text-lg font-bold text-black">{name}</Text>

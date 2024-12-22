@@ -39,6 +39,7 @@ const CreateRecipe = ({ navigation }: Props) => {
   const [dishName, setDishName] = useState("");
   const [dishDescription, setDishDescription] = useState("");
   const [dishPhoto, setDishPhoto] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   // Загрузка ингредиентов с бэка
   useEffect(() => {
@@ -71,8 +72,9 @@ const CreateRecipe = ({ navigation }: Props) => {
   };
 
   const handleSave = async () => {
+    setSaving(true);
     try {
-      const creatorId = useUserStore.getState().id;
+      const { id: creatorId, name: creatorName } = useUserStore.getState();
       const { steps, resetStepIds, addStepId, recipeId, setRecipeId } =
         useRecipeStore.getState();
 
@@ -86,7 +88,10 @@ const CreateRecipe = ({ navigation }: Props) => {
         return;
       }
 
+      console.log("selectedIngredientIds", selectedIngredientIds);
+
       const ingredientIds = selectedIngredientIds.map((id) => Number(id));
+      console.log("ingredientIds", ingredientIds);
       const stepIds: number[] = [];
 
       console.log("Начало сохранения рецепта...");
@@ -99,10 +104,8 @@ const CreateRecipe = ({ navigation }: Props) => {
           const stepData = {
             step_number: index + 1,
             description: step.description,
-            image: step.photo, // Проверяем наличие фото
+            image: step.photo,
           };
-
-          console.log(stepData);
 
           const response = await InstructionService.addInstruction(stepData);
 
@@ -111,33 +114,19 @@ const CreateRecipe = ({ navigation }: Props) => {
           }
 
           const stepId = response.data.id;
-          console.log(stepId);
-          console.log(`Шаг ${index + 1} создан:`, response.data);
-
+          console.log("stepId", stepId);
           addStepId(stepId);
           stepIds.push(stepId);
+          console.log("stepIds", stepIds);
 
-          console.log(stepId, step.photo);
-
-          if (step.photo) {
-            try {
-              const photoResponse =
-                await InstructionService.addImageToInstruction(
-                  stepId,
-                  step.photo
-                );
-              console.log("Фото успешно добавлено к шагу:", photoResponse.data);
-            } catch (error: any) {}
-          } else {
-            await InstructionService.addImageToInstruction(stepId, "tooeopewd");
-          }
+          // if (step.photo) {
+          //   await InstructionService.addImageToInstruction(stepId, step.photo);
+          // }
         } catch (stepError) {
           console.error(`Ошибка при создании шага ${index + 1}:`, stepError);
-          return; // Останавливаем процесс, если ошибка на одном из шагов
+          return;
         }
       }
-
-      console.log("Все шаги успешно отправлены. ID шагов:", stepIds);
 
       // Создаем блюдо
       try {
@@ -145,15 +134,14 @@ const CreateRecipe = ({ navigation }: Props) => {
           name: dishName,
           description: dishDescription,
           creatorId,
-          instructionIds: stepIds, // Массив ID шагов
-          ingredientIds, // Массив ID ингредиентов
+          creatorName,
+          instructionIds: stepIds,
+          ingredientIds,
         };
 
-        console.log("запросики");
+        console.log("dishData", dishData);
 
         const dishResponse = await DishService.addDish(dishData);
-
-        console.log("успех");
 
         if (!dishResponse || !dishResponse.data?.id) {
           throw new Error("Ошибка создания блюда");
@@ -162,18 +150,33 @@ const CreateRecipe = ({ navigation }: Props) => {
         const dishId = dishResponse.data.id;
         setRecipeId(dishId);
 
-        console.log("Блюдо создано:", dishResponse.data);
-
         if (dishPhoto) {
-          console.log(`Добавляем изображение к блюду ${dishId}`);
           await DishService.addImageToDish(dishId, dishPhoto);
         }
+
+        // Сохраняем блюдо в стор
+        const newDish = {
+          ...dishResponse.data,
+          stepIds,
+          ingredientIds,
+          creatorName,
+        };
+
+        console.log("Добавляем блюдо в стор:", newDish);
+
+        useDishStore.getState().addDishWithDetails(newDish);
+
+        console.log("Блюдо создано и сохранено в стор:", newDish);
       } catch (dishError) {
         console.error("Ошибка при создании блюда:", dishError);
-        return; // Завершаем процесс при ошибке создания блюда
+        return;
+      } finally {
+        setSaving(false); // Выключаем состояние загрузки
       }
+
+      // fetchDishes();
+
       navigation.navigate("Home");
-      fetchDishes();
 
       console.log("Рецепт успешно сохранен!");
     } catch (error) {
@@ -296,9 +299,9 @@ const CreateRecipe = ({ navigation }: Props) => {
 
       <ButtonDefoult
         onPress={handleSave}
-        text="Сохранить рецепт"
-        buttonState="black"
+        text={saving ? "Создание..." : "Создать рецепт"} // Меняем текст кнопки
         btnStyle={{ marginTop: 20, marginBottom: 40 }}
+        buttonState="black"
       />
     </ScrollView>
   );

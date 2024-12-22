@@ -14,7 +14,7 @@ interface RecomendationRecipeItemProps {
 
 function RecomendationRecipeItem(props: RecomendationRecipeItemProps) {
   const { id, title, authorName, image, navigation } = props;
-  console.log("тут", image);
+  // console.log("тут", image);
 
   const transformedUrl = transformUrl(image || "string");
 
@@ -41,16 +41,12 @@ function RecomendationRecipeItem(props: RecomendationRecipeItemProps) {
             {title}
           </Text>
           <View className="flex-row items-center">
-            <Image
-              source={{ uri: "https://via.placeholder.com/20" }}
-              className="w-[20px] h-[20px] rounded-full"
-            />
             <Text
               className="text-sm leading-[145%] ml-2 max-w-[150px] text-[#97A2B0]"
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {authorName}
+              Автор: {authorName}
             </Text>
           </View>
         </View>

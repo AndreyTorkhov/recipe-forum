@@ -1,40 +1,35 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import React from "react";
+import { View, Text, FlatList } from "react-native";
+import { useFavoriteStore } from "../../../Store/useFavoriteStore";
+import { useDishStore } from "../../../Store/useDishStore";
 import FavoritesRecipesItem from "../FavoritesRecipesItem";
 
-interface Recipe {
-  id: string;
-  title: string;
-  authorName: string;
-}
+const FavoritesRecipesList = () => {
+  const { favoriteDishes } = useFavoriteStore();
+  const { dishes } = useDishStore();
 
-function FavoritesRecipesList() {
-  const recipes: Recipe[] = [
-    { id: "1", title: "Spaghetti Carbonara", authorName: "John Doe" },
-    { id: "2", title: "Chicken Alfredo", authorName: "Jane Smith" },
-    { id: "3", title: "Caesar Salad", authorName: "Chef Mario" },
-    { id: "4", title: "Beef Stroganoff", authorName: "Julia Child" },
-    { id: "5", title: "Grilled Salmon", authorName: "Gordon Ramsay" },
-  ];
+  // Отфильтровываем только избранные блюда
+  const favoriteRecipes = dishes.filter((dish) =>
+    favoriteDishes.includes(dish.id)
+  );
+
   return (
     <View className="flex-1 pt-5">
-      <Text className="text-2xl font-bold mb-4">My Favorites</Text>
-
-      <FlatList
-        data={recipes}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
-        renderItem={({ item }) => (
-          <FavoritesRecipesItem
-            title={item.title}
-            authorName={item.authorName}
-          />
-        )}
-        showsVerticalScrollIndicator={false}
-      />
+      <Text className="text-2xl font-bold mb-4">Избранное</Text>
+      {favoriteRecipes.length > 0 ? (
+        <FlatList
+          data={favoriteRecipes}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+          renderItem={({ item }) => <FavoritesRecipesItem id={item.id} />}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Text className="text-gray-600">Пока ничего нет...</Text>
+      )}
     </View>
   );
-}
+};
 
 export default FavoritesRecipesList;
